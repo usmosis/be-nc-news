@@ -1,7 +1,6 @@
 const {selectArticles, selectArticleById} = require('../models/articles.models')
 
 exports.sendArticles = (req, res) => {
-    console.log('in the controller')
     selectArticles()
     .then((articles) => res.status(200).send({articles}))
 }
