@@ -94,3 +94,48 @@ describe('GET: /api/articles', () => {
         })
     });
 });
+
+describe('GET: /api/articles/:article_id/comments', () => {
+    it("200: responds with all comments relating to particular article with article_id", () => {
+        return request(app).get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments.length).toBe(11)
+            expect(comments).toBeSortedBy('created_at', {descending: true})
+            comments.forEach((comment) => {
+                expect(comment).toHaveProperty('comment_id')
+                expect(comment).toHaveProperty('body')
+                expect(comment).toHaveProperty('votes')
+                expect(comment).toHaveProperty('author')
+                expect(comment).toHaveProperty('article_id')
+                expect(comment).toHaveProperty('created_at')
+            })
+        })
+    })
+    it("200: responds with an empty array if article exists but has no comments", () => {
+        return request(app).get('/api/articles/7/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments).toEqual([])
+        })
+    })
+    it("GET:404 sends an appropriate error message when given a valid but non-existent article_id", () => {
+        return request(app).get('/api/articles/999/comments')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            // console.log(body)
+            expect(msg).toBe('Not found')
+        })
+    })
+    it("GET:400 sends an appropriate error message when given an invalid article_id", () => {
+        return request(app).get('/api/articles/dog/comments')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+});
