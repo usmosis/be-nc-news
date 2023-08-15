@@ -103,7 +103,6 @@ describe('GET: /api/articles/:article_id/comments', () => {
             const {comments} = body;
             expect(comments.length).toBe(11)
             expect(comments).toBeSortedBy('created_at', {descending: true})
-            console.log(comments)
             comments.forEach((comment) => {
                 expect(comment).toHaveProperty('comment_id')
                 expect(comment).toHaveProperty('body')
@@ -112,6 +111,15 @@ describe('GET: /api/articles/:article_id/comments', () => {
                 expect(comment).toHaveProperty('article_id')
                 expect(comment).toHaveProperty('created_at')
             })
+        })
+    })
+    it("200: responds with an empty array if article exists but has no comments", () => {
+        return request(app).get('/api/articles/7/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            console.log(comments, "<<<<");
+            expect(comments).toEqual([])
         })
     })
     it("GET:404 sends an appropriate error message when given a valid but non-existent article_id", () => {
