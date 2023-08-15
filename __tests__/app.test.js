@@ -34,8 +34,41 @@ describe ('GET: /api', () => {
         return request(app).get('/api').expect(200)
         .then(({body}) => {
             const {endPoints} = body
-            console.log(body)
             expect(endPoints).toEqual(endpointsJSON)
+        })
+    })
+})
+
+describe ('GET: /api/articles/:article_id', () => {
+    it('200: responds with correct status code and an article object with correct shape', () => {
+        return request(app).get('/api/articles/1')
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body
+            expect(article.article_id).toEqual(1)
+            expect(article.author).toEqual('butter_bridge')
+            expect(article.title).toEqual('Living in the shadow of a great man')
+            expect(article.body).toEqual('I find this existence challenging')
+            expect(article.topic).toEqual('mitch')
+            expect(typeof article.created_at).toBe("string")
+            expect(article.votes).toEqual(100)
+            expect(article.article_img_url).toEqual('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+        })
+    });
+    it('GET:404 sends an appropriate error message when given a valid but non-existent article_id', () => {
+        return request(app).get('/api/articles/999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Not found")
+        })
+    });
+    it('GET:400 sends an appropriate error message when given an invalid article_id', () => {
+        return request(app).get('/api/articles/dog')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Bad request')
         })
     })
 })
