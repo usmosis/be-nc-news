@@ -4,15 +4,18 @@ const {selectArticleById} = require('../models/articles.models')
 exports.sendCommentsByArticleId = (req, res, next) => {
 
     const {article_id} = req.params;
+    const promises = [selectArticleById(article_id)]
 
-    selectArticleById(article_id)
-    .then(() => {
-        return selectCommentsByArticleId(article_id)
+    if(article_id){
+        promises.push(selectCommentsByArticleId(article_id))
+    }
+
+    Promise.all(promises)
+    .then((resolvedPromises) => {
+        const comments = resolvedPromises[1];
+        res.status(200).send({comments})
     })
-    .then((comments) => {
-        console.log(comments, "<<< controller")
-        return res.status(200).send({comments})})
     .catch((err) => {
-        next(err)
+        next(err);
     })
 }
