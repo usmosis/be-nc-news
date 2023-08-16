@@ -1,4 +1,4 @@
-const {selectCommentsByArticleId} = require('../models/comments.models')
+const {selectCommentsByArticleId, insertComment} = require('../models/comments.models')
 const {selectArticleById} = require('../models/articles.models')
 
 exports.sendCommentsByArticleId = (req, res, next) => {
@@ -17,5 +17,26 @@ exports.sendCommentsByArticleId = (req, res, next) => {
     })
     .catch((err) => {
         next(err);
+    })
+}
+
+exports.postComment = (req, res, next) => {
+
+    const {article_id} = req.params
+    const {username, body} = req.body
+    const promises = [selectArticleById(article_id)]
+
+    if(article_id){
+        promises.push(insertComment({article_id, username, body}))
+    }
+
+    Promise.all(promises)
+    .then((resolvedPromises) => {
+        const comment = resolvedPromises[1];
+        res.status(201).send({comment})
+    })
+    .catch((err) => {
+        console.log(err)
+        next(err)
     })
 }
