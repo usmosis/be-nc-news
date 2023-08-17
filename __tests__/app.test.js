@@ -254,3 +254,27 @@ describe('PATCH: /api/articles/:article_id', () => {
         })
     });
 });
+
+describe('DELETE: /api/comments/:comment_id', () => {
+    it('204: removes the specified comment and responds with correct status code', () => {
+        return request(app).delete('/api/comments/1')
+        .expect(204)
+            
+        })
+    });
+    it("404: responds with appropriate error message when given a valid but non-existent comment_id", () => {
+        return request(app).delete('/api/comments/999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Not found")
+        })
+    })
+    it("400: responds with appropriate error message when given an invalid comment_id", () => {
+        return request(app).delete('/api/comments/dog')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Bad request")
+        })
+    })
