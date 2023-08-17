@@ -2,8 +2,12 @@ const express = require("express");
 const app = express();
 
 const {sendTopics, sendEndpoints} = require("./controllers/topics.controllers.js")
+
 const {updateArticleVotesById, sendArticles, sendArticleById} = require("./controllers/articles.controllers.js")
+
 const {sendCommentsByArticleId, postComment, deleteComment} = require('./controllers/comments.controllers.js')
+
+const {sendUsers} = require('./controllers/users.controllers.js')
 
 app.use(express.json());
 
@@ -16,6 +20,8 @@ app.get('/api/articles/:article_id', sendArticleById)
 app.get('/api/articles', sendArticles)
 
 app.get('/api/articles/:article_id/comments', sendCommentsByArticleId)
+
+app.get('/api/users', sendUsers)
 
 app.post('/api/articles/:article_id/comments', postComment)
 
