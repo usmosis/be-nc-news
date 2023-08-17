@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 const {sendTopics, sendEndpoints} = require("./controllers/topics.controllers.js")
-const {sendArticles, sendArticleById} = require("./controllers/articles.controllers.js")
+const {updateArticleVotesById, sendArticles, sendArticleById} = require("./controllers/articles.controllers.js")
 const {sendCommentsByArticleId, postComment} = require('./controllers/comments.controllers.js')
 
 app.use(express.json());
@@ -18,6 +18,8 @@ app.get('/api/articles', sendArticles)
 app.get('/api/articles/:article_id/comments', sendCommentsByArticleId)
 
 app.post('/api/articles/:article_id/comments', postComment)
+
+app.patch('/api/articles/:article_id', updateArticleVotesById)
 
 app.use((err, req, res, next) => {
     if(err.status && err.msg){

@@ -201,5 +201,56 @@ describe('POST: /api/articles/:article_id/comments', () => {
             expect(msg).toBe('Bad request')
         })
     });
-
+});
+describe('PATCH: /api/articles/:article_id', () => {
+    it('200: responds with an updated article that has new vote value', () => {
+        let newVote = -99
+        const voteUpdate = {inc_votes: newVote}
+        return request(app).patch('/api/articles/1')
+        .send(voteUpdate)
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article).toMatchObject({title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            votes: 1,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"})
+        })
+    });
+    it('404: responds with an appropriate error when given a valid but non existent article_id', () => {
+        let newVote = -99
+        const voteUpdate = {inc_votes: newVote}
+        return request(app).patch('/api/articles/999')
+        .send(voteUpdate)
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Not found")
+        })
+    })
+    it('400: responds with an appropriate error when given an invalid value for newVote', () => {
+        let newVote = 'apple'
+        const voteUpdate = {inc_votes: newVote}
+        return request(app).patch('/api/articles/1')
+        .send(voteUpdate)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Bad request")
+        })
+    });
+    it('400: responds with an appropriate error when given an invalid article_id', () => {
+        let newVote = -99
+        const voteUpdate = {inc_votes: newVote}
+        return request(app).patch('/api/articles/dog')
+        .send(voteUpdate)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Bad request")
+        })
+    });
 });
