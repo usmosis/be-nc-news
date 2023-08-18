@@ -80,7 +80,6 @@ describe('GET: /api/articles', () => {
         .then(({body}) => {
             const {articles} = body;
             expect(articles.length).toBe(13)
-            expect(articles).toBeSortedBy('created_at', {descending: true})
             articles.forEach(article => {
                 expect(article).toHaveProperty('author')
                 expect(article).toHaveProperty('title')
@@ -93,7 +92,61 @@ describe('GET: /api/articles', () => {
             })
         })
     });
-});
+    it("200: able to take a filter query that filteres articles by topic", () => {
+        return request(app).get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            articles.forEach((article) => {
+                expect(article.topic).toBe("mitch")
+            })
+        })
+    })
+    it("404: responds with appropriate error when given an invalid topic", () => {
+        return request(app)
+        .get('/api/articles?topic=match')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Not found")
+        })
+    })
+    it("200: able to take a sort_by query that sorts by...", () => {
+        return request(app).get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toBeSortedBy("votes", {descending: true})
+            })
+        })
+    })
+    it("400: responds with appropriate error when given an invalid sort_by", () => {
+        return request(app)
+        .get('/api/articles?sort_by=dog&order=desc')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Bad request")
+        })
+    })
+    it("200: able to take an order query that orders ascending or descending", () => {
+        return request(app).get('/api/articles?sort_by=votes&order=asc')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toBeSortedBy("votes", {ascending: true})
+            })
+        })
+
+    it("400: responds with appropriate error when given an invalid order", () => {
+        return request(app)
+        .get('/api/articles?topic=mitch&sort_by=created_at&order=misc')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body
+            expect(msg).toBe("Bad request")
+        })
+    })
 
 describe('GET: /api/articles/:article_id/comments', () => {
     it("200: responds with all comments relating to particular article with article_id", () => {

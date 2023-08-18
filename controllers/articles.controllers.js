@@ -1,8 +1,21 @@
-const {updateArticleVotes, selectArticles, selectArticleById} = require('../models/articles.models')
+const {updateArticleVotes, selectArticles, selectArticleById, checkTopicExists} = require('../models/articles.models')
 
-exports.sendArticles = (req, res) => {
-    selectArticles()
-    .then((articles) => res.status(200).send({articles}))
+exports.sendArticles = (req, res, next) => {
+    const {topic, sort_by, order} = req.query
+    const promises = [selectArticles(topic, sort_by, order)]
+
+    if(topic){
+        promises.push(checkTopicExists(topic))
+    }
+
+    Promise.all(promises)
+    .then((resolvedPromises) => {
+        const articles = resolvedPromises[0]
+        return res.status(200).send({articles})
+    })
+    .catch((err)=>{
+        next(err)
+    })
 }
 
 
