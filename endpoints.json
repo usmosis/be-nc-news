@@ -1,62 +1,244 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+  "description": "serves up a json representation of all the available endpoints of the api",
+  "queries": [],
+  "exampleResponse": "All the stuff you see on this page!",
+  "status": 200
   },
+
   "GET /api/topics": {
-    "description": "serves an array of all topics",
-    "queries": [],
-    "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
-    }
+  "description": "serves an array of all topics",
+  "queries": [],
+  "exampleResponse": {
+  "topics": [
+  {
+  "slug": "football",
+  "description": "Footie!"
+  }
+  ]
+  }
+  },
+
+  "POST /api/topics": {
+  "description": "adds a new topic to the topics table and returns the newly created topic. must contain a slug that does not already exist",
+  "body": {
+  "slug": "Baseball",
+  "description": "Home run!"
+  },
+  "exampleResponse": {
+  "topic": {
+  "slug": "Baseball",
+  "description": "Home run!"
+  }
+  },
+  "status": 200
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
-    "exampleResponse": {
-      "articles": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 0,
-          "comment_count": 6
-        }
-      ]
-    }
-  }, 
-"GET /api/articles/:article_id": {
-  "description": "serves a partiuclar article from passed article_id",
-  "queries": "takes a number",
+  "description": "serves an array of all articles",
+  "queries": [
+  "author",
+  "topic",
+  "sort_by",
+  "order",
+  "limit",
+  "p",
+  "total_count"
+  ],
+  "queryInfo": {
+  "topic": "filters results to only include articles which match topic",
+  "sort_by": "sorts articles by values for valid article parameters. sorts numeric values numerically and non-numerical values alphabetically. defaults to created_at",
+  "order": "sorts articles in ascending or descending order. defaults to descending",
+  "limit": "paginates the results, limiting them to the number specified in this query",
+  "p": "returns the page of results corresponding to the number specified in the query",
+  "total_count": "specifies whether you will see the total count of all articles that meet the query criteria in the response to help you figure out how many pages you might need to view for a given limit. inputs are '1' if you want to see the total count and '0' if you don't. defaults to '0'."
+  },
   "exampleResponse": {
-    "article": {
-      "article_id": 1,
-      "title": "Living in the shadow of a great man",
-      "topic": "mitch",
-      "author": "butter_bridge",
-      "body": "I find this existence challenging",
-      "created_at": "2020-07-09T20:11:00.000Z",
-      "votes": 100,
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-    }
+  "articles": [
+  {
+  "title": "Seafood substitutions are increasing",
+  "topic": "cooking",
+  "author": "weegembump",
+  "body": "Text from the article..",
+  "created_at": "2018-05-30T15:59:13.341Z",
+  "votes": 0,
+  "comment_count": 6
   }
-},
-"GET /api/articles/:article_id/comments": {
-  "description": "serves an array of all comments associated with article of article_id",
-  "queries": "takes a number",
+  ]
+  },
+  "status": 200
+  },
+  "POST /api/articles": {
+  "description": "adds a new article to the article table in the database. username must match a username from within the users table, and topic must match a topic name in the topics table. article_img_url will have default value if no input is provided for it",
+  "body": {
+  "author": "icellusedkars",
+  "title": "A History of Jeffs",
+  "body": "On the first day, there was only one Jeff. On the second...",
+  "topic": "cats",
+  "article_img_url": "https://th-thumbnailer.cdn-si-edu.com/bZAar59Bdm95b057iESytYmmAjI=/1400x1050/filters:focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
+  },
   "exampleResponse": {
-    "comments": [{
-      "comment_id": 2,
-      "body": "I find this existence challenging",
-      "article_id": 1, 
-      "author": "butter_bridge",
-      "votes": 100,
-      "created_at": "2020-07-09T20:11:00.000Z",
-      "title": "Living in the shadow of a great man",
-      "topic": "mitch",
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-    }]
+  "articles": {
+  "article_id": 14,
+  "title": "A History of Jeffs",
+  "topic": "cats",
+  "author": "icellusedkars",
+  "body": "On the first day, there was only one Jeff. On the second...",
+  "created_at": "2023-08-16T13:58:19.246Z",
+  "votes": 0,
+  "article_img_url": "https://th-thumbnailer.cdn-si-edu.com/bZAar59Bdm95b057iESytYmmAjI=/1400x1050/filters:focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg",
+  "comment_count": 0
   }
-}
+  },
+  "status": 204
+  },
+  "GET /api/articles/:articles_id": {
+  "description": "returns an object containing information relevant to the article which matches the article id",
+  "queries": [],
+  "exampleResponse": {
+  "article": {
+  "title": "Eight pug gifs that remind me of mitch",
+  "topic": "mitch",
+  "article_id": 3,
+  "votes": 0,
+  "author": "icellusedkars",
+  "body": "some gifs",
+  "created_at": "2020-11-03T09:12:00.000Z",
+  "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+  "comment_count": 2
+  }
+  },
+  "status": 200
+  },
+  "PATCH /api/articles/:articles_id": {
+  "description": "updates a given article's vote count and responds with that updated article",
+  "body": {
+  "inc_votes": 1
+  },
+  "exampleResponse": {
+  "article": {
+  "title": "Eight pug gifs that remind me of mitch",
+  "topic": "mitch",
+  "article_id": 3,
+  "votes": 1,
+  "author": "icellusedkars",
+  "body": "some gifs",
+  "created_at": "2020-11-03T09:12:00.000Z",
+  "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+  }
+  },
+  "status": 200
+  },
+  "DELETE /api/articles/:articles_id": {
+  "description": "removes an article based on the given id. also removes all the comments that had the same article_id",
+  "status": 204
+  },
+  "GET /api/articles/:articles_id/comments": {
+  "description": "returns an array contatining comments relevant to the article_id",
+  "queries": [
+  "limit",
+  "p"
+  ],
+  "queryInfo": {
+  "limit": "paginates the results, limiting them to the number specified in this query",
+  "p": "returns the page of results corresponding to the number specified in the query"
+  },
+  "exampleResponse": {
+  "comments": [
+  {
+  "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+  "votes": 14,
+  "author": "butter_bridge",
+  "article_id": 1,
+  "created_at": 1604113380000
+  },
+  {
+  "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+  "votes": 100,
+  "author": "icellusedkars",
+  "article_id": 1,
+  "created_at": 1583025180000
+  }
+  ]
+  },
+  "status": 200
+  },
+  "POST /api/articles/:articles_id/comments": {
+  "description": "adds a new comment to the comment table in the database. username must match a username from within the users table",
+  "body": {
+  "username": "rogersop",
+  "body": "A whacky good read"
+  },
+  "exampleResponse": {
+  "comment": {
+  "comment_id": 19,
+  "body": "A whacky good read",
+  "article_id": 3,
+  "author": "rogersop",
+  "votes": 0,
+  "created_at": "2023-08-14T15:53:16.851Z"
+  }
+  },
+  "status": 204
+  },
+  "DELETE /api/comments/:comment_id": {
+  "description": "deletes a comment using the given comment id",
+  "status": 204
+  },
+  "PATCH /api/comments/:comment_id": {
+  "description": "updates the vote count for a comment using the given comment id and responds with the updated comment",
+  "body": {
+  "inc_votes": 1
+  },
+  "exampleResponse": {
+  "article": {
+  "comment_id": 3,
+  "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+  "votes": 101,
+  "author": "icellusedkars",
+  "article_id": 1,
+  "created_at": "2020-03-01T01:13:00.000Z"
+  }
+  },
+  "status": 200
+  },
+  "GET /api/users": {
+  "description": "returns an array contatining objects of users",
+  "queries": [],
+  "exampleResponse": {
+  "users": [
+  {
+  "username": "butter_bridge",
+  "name": "jonny",
+  "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+  },
+  {
+  "username": "icellusedkars",
+  "name": "sam",
+  "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+  },
+  {
+  "username": "rogersop",
+  "name": "paul",
+  "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+  },
+  {
+  "username": "lurker",
+  "name": "do_nothing",
+  "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+  }
+  ]
+  }
+  },
+  "GET /api/users/:username": {
+  "description": "returns an individual user matching the provided username",
+  "queries": [],
+  "exampleResponse": {
+  "user": {
+  "username": "samsamsamsam",
+  "name": "sam",
+  "avatar_url": "https://th-thumbnailer.cdn-si-edu.com/bZAar59Bdm95b057iESytYmmAjI=/1400x1050/filters:focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
+  }
+  },
+  "status": 200
+  }
 }
