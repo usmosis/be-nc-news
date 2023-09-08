@@ -5,7 +5,6 @@ const tableHeaders = [
     "article_id",
     "author", 
     "created_at", 
-    "comment_count",
     "votes", 
     "article_img_url"
 ]
