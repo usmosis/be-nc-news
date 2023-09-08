@@ -26,7 +26,7 @@ if(topic){
 baseSqlStringOne += `GROUP BY articles.article_id `
 
 if(sort_by){
-    baseSqlStringOne += `ORDER BY articles.${sort_by} `
+    baseSqlStringOne += `ORDER BY ${sort_by} `
 }
 
 if(order){
